@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  flask_app:
+    build: .
+    container_name: nfl_flask_app
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    environment:
+      # Use the service name 'postgres_db' as the hostname
+      DATABASE_URL: postgresql://postgres:postgres_password@postgres_db:5432/nfl_db
+    depends_on:
+      - postgres_db 
+
+  postgres_db:
+    image: postgres:15-alpine 
+    container_name: postgres_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+      POSTGRES_DB: nfl_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data 
+
+volumes:
+  pgdata:
